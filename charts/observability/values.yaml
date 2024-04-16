@@ -28,6 +28,11 @@ nodeExporter:
 #####################################################################
 grafana:
   enabled: true
+  auth:
+    github:
+      enabled: false
+    google:
+      enabled: false
   defaultDashboardsEnabled: true
   defaultDashboardsEditable: false
   adminUser: admin-2i7D9168pqiCsAiyvHSUc
@@ -54,6 +59,8 @@ grafana:
       defaultMode: 440
       mountPath: /etc/secrets/auth/google
       readOnly: true
+  ingress:
+    enabled: false
 
 
 #####################################################################
