@@ -1,0 +1,15 @@
+dependencies:
+- name: grafana
+  repository: https://grafana.github.io/helm-charts
+  version: 7.3.8
+- name: loki
+  repository: https://grafana.github.io/helm-charts
+  version: 5.36.3
+- name: opencost
+  repository: https://opencost.github.io/opencost-helm-chart
+  version: 1.33.3
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 25.19.1
+digest: sha256:0ff7885c255c31efa36568a6a82bcd46e70e9d654a0e796b50169fd6f2fc3fc6
+generated: "2024-04-16T10:55:03.009275+02:00"
