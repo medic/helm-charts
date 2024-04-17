@@ -130,7 +130,7 @@ opencost:
         serviceName: '{{ include "observability.prometheus.fullname" . }}'
         namespaceName: '{{ include "observability.namespace" . }}'
     ui:
-      enabled: false
+      enabled: true
 
 
 #####################################################################
