@@ -87,8 +87,8 @@
       {
         "current": {
           "selected": true,
-          "text": "",
-          "value": ""
+          "text": "kube-system",
+          "value": "kube-system"
         },
         "datasource": {
           "type": "loki",
