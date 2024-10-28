@@ -2,5 +2,11 @@ dependencies:
 - name: base-single-app
   repository: https://docs.communityhealthtoolkit.org/helm-charts
   version: 0.2.0
-digest: sha256:284a3dc5e9eb4c400a3abff6f49faa047ad11d2dbbc873e8adf8829cde321aae
-generated: "2024-04-10T11:32:50.118338+02:00"
+- name: base-single-app
+  repository: https://docs.communityhealthtoolkit.org/helm-charts
+  version: 0.2.0
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 16.13.2
+digest: sha256:7ab3acf9fe6ac215c38d90edfeed99afa631c929674aa923f2e607c63ce17c76
+generated: "2024-10-27T21:42:14.879031-06:00"
