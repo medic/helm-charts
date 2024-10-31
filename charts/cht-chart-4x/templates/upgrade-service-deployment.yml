@@ -23,6 +23,7 @@ spec:
       serviceAccountName: cht-upgrade-service-user
       containers:
       - image: medicmobile/upgrade-service:{{ .Values.upgrade_service.tag }}
+        imagePullPolicy: Always
         name: upgrade-service
         resources: {}
         env:
