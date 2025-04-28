@@ -32,9 +32,9 @@ spec:
       {{- end }}
     {{- end }}
       containers:
+        - name: cht-couchdb-nouveau
           image: {{ .Values.upstream_servers.docker_registry }}/cht-couchdb-nouveau:{{ .Values.cht_image_tag }}
           {{ if eq .Values.cache_images false}}imagePullPolicy: Always{{ end }}
-          name: cht-couchdb-nouveau
           ports:
             - containerPort: 5987
           resources: {}
