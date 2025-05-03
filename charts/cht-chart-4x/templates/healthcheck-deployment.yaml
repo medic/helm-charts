@@ -17,6 +17,14 @@ spec:
     spec:
       containers:
         - env:
+            {{- if .Values.couchdb.useExternal }}
+            - name: COUCHDB_USER
+              value: {{ .Values.couchdb.external.username }}
+            - name: COUCHDB_PASSWORD
+              value: {{ .Values.couchdb.external.password }}
+            - name: COUCHDB_SERVERS
+              value: {{ .Values.couchdb.external.host }}
+            {{- else }}
             - name: COUCHDB_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -32,8 +40,11 @@ spec:
                 secretKeyRef:
                   name: cht-couchdb-credentials
                   key: COUCHDB_USER
+            {{- end }}
           image: {{ .Values.upstream_servers.docker_registry }}/cht-haproxy-healthcheck:{{ .Values.cht_image_tag }}
-          {{ if eq .Values.cache_images false}}imagePullPolicy: Always{{ end }}
+          {{- if eq .Values.cache_images false }}
+          imagePullPolicy: Always
+          {{- end }}
           name: cht-haproxy-healthcheck
           resources: {}
           ports:

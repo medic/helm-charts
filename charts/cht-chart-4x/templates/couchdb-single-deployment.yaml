@@ -1,4 +1,4 @@
-{{- if eq (toString .Values.couchdb.clusteredCouch_enabled) "false" }}
+{{- if and (eq (toString .Values.couchdb.clusteredCouch_enabled) "false") (not .Values.couchdb.useExternal) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -18,21 +18,28 @@ spec:
         cht.service: couchdb
     spec:
       securityContext:
-        runAsUser: 0  # Run as root
-        fsGroup: 0    # Set fsGroup to root
+        runAsUser: 0
+        fsGroup: 0
       tolerations:
         - key: {{ .Values.toleration.key }}
           operator: {{ .Values.toleration.operator }}
           value: {{ .Values.toleration.value | quote }}
           effect: {{ .Values.toleration.effect }}
-    {{- if hasKey .Values "nodes" }}
-      {{- if hasKey .Values.nodes "single_node_deploy" }}
+      {{- if hasKey .Values "nodes" }}
+        {{- if hasKey .Values.nodes "single_node_deploy" }}
       nodeSelector:
         kubernetes.io/hostname: {{ .Values.nodes.single_node_deploy }}
+        {{- end }}
       {{- end }}
-    {{- end }}
       containers:
-        - env:
+        - name: cht-couchdb
+          image: {{ .Values.upstream_servers.docker_registry }}/cht-couchdb:{{ .Values.cht_image_tag }}
+          {{- if eq .Values.cache_images false }}
+          imagePullPolicy: Always
+          {{- end }}
+          ports:
+            - containerPort: 5984
+          env:
             - name: COUCHDB_LOG_LEVEL
               value: info
             - name: COUCHDB_PASSWORD
@@ -57,11 +64,6 @@ spec:
                   key: COUCHDB_UUID
             - name: SVC_NAME
               value: couchdb.{{ .Values.namespace }}.svc.cluster.local
-          image: {{ .Values.upstream_servers.docker_registry }}/cht-couchdb:{{ .Values.cht_image_tag }}
-          {{ if eq .Values.cache_images false}}imagePullPolicy: Always{{ end }}
-          name: cht-couchdb
-          ports:
-            - containerPort: 5984
           resources: {}
           {{- if eq (toString .Values.cluster_type) "k3s-k3d" }}
           volumeMounts:
