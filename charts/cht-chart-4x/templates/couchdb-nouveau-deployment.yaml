@@ -46,7 +46,11 @@ spec:
           {{- else }}
           volumeMounts:
             - mountPath: /data/nouveau
-              name: couchdb-nouveau-claim0
+              {{- if eq (toString $.Values.couchdb.clusteredCouch_enabled) "true" }}
+              name: couchdb-1-claim0
+              {{- else }}
+              name: couchdb-claim0
+              {{- end }}
               subPath: data
           {{- end }}
       restartPolicy: Always
@@ -57,9 +61,15 @@ spec:
             path: {{ index .Values.local_storage "preExistingDiskPath-1" }}
       {{- else }}
       volumes:
-        - name: couchdb-nouveau-claim0
+        {{- if eq (toString $.Values.couchdb.clusteredCouch_enabled) "true" }}
+        - name: couchdb-1-claim0
           persistentVolumeClaim:
-            claimName: couchdb-nouveau-claim0
+            claimName: couchdb-1-claim0
+        {{- else }}
+        - name: couchdb-claim0
+          persistentVolumeClaim:
+            claimName: couchdb-claim0
+        {{- end }}
       {{- end }}
 status: {}
 {{- end }}
