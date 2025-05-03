@@ -20,14 +20,18 @@ spec:
             - name: API_HOST
               value: api.{{ .Values.namespace }}.svc.cluster.local
             - name: COUCH_URL
-              valueFrom:
-                secretKeyRef:
-                  name: cht-couchdb-credentials
-                  key: COUCH_URL
+              value: >
+                {{- if .Values.couchdb.useExternal -}}
+                http://{{ .Values.couchdb.external.username }}:{{ .Values.couchdb.external.password }}@{{ .Values.couchdb.external.host }}:{{ .Values.couchdb.external.port }}/medic
+                {{- else -}}
+                http://{{ .Values.couchdb.user }}:{{ .Values.couchdb.password }}@haproxy.{{ .Values.namespace }}.svc.cluster.local:5984/medic
+                {{- end }}
             - name: API_PORT
               value: '5988'
           image: {{ .Values.upstream_servers.docker_registry }}/cht-sentinel:{{ .Values.cht_image_tag }}
-          {{ if eq .Values.cache_images false}}imagePullPolicy: Always{{ end }}
+          {{- if eq .Values.cache_images false }}
+          imagePullPolicy: Always
+          {{- end }}
           name: cht-sentinel
           resources: {}
       restartPolicy: Always

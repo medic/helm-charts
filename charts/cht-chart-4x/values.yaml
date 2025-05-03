@@ -1,95 +1,89 @@
-project_name: "<your-project-name>" # e.g. mrjones-dev
-namespace: "<your-namespace>" # e.g. "mrjones-dev"
+project_name: "<your-project-name>" # Example: mrjones-dev
+namespace: "<your-namespace>" # Example: mrjones-dev
 chtversion: 4.10.0
-# cht_image_tag: 4.1.1-4.1.1 #- This is filled in automatically by the deploy script. Don't uncomment this line.
+# cht_image_tag: 4.1.1-4.1.1 — This is auto-filled by the deploy script. Do not uncomment manually.
 
-# If images are cached, the same image tag will never be pulled twice. For development, this means that it's not
-# possible to upgrade to a newer version of the same branch, as the old image will always be reused.
-# For development instances, set this value to false.
+# When set to true, images are cached and won't be pulled again. Set to false for development environments.
 cache_images: true
 
-# Don't change upstream-servers unless you know what you're doing.
+# Use the default upstream servers unless you have a specific override.
 upstream_servers:
   docker_registry: "public.ecr.aws/medic"
   builds_url: "https://staging.dev.medicmobile.org/_couch/builds_4"
+
 upgrade_service:
   tag: 0.32
 
-# CouchDB Settings
+# CouchDB Configuration
 couchdb:
-  password: "<password-value>" # Avoid using non-url-safe characters in password
-  secret: "f9053a0a-ef77-4be3-994d-87d6732600fd" # for prod, change to output of `uuidgen
+  password: "<password-value>" # Avoid using special characters that are not URL-safe
+  secret: "f9053a0a-ef77-4be3-994d-87d6732600fd" # For production, generate using uuidgen
   user: "medic"
-  uuid: "7300115e-1a98-4607-a37c-50e0c9913767" # for prod, change to output of `uuidgen`
+  uuid: "7300115e-1a98-4607-a37c-50e0c9913767" # For production, generate using uuidgen
   clusteredCouch_enabled: false
   couchdb_node_storage_size: 100Mi
+
+  # Set to true to disable the internal CouchDB deployment and use an external CouchDB instance
+  useExternal: false
+
+  # Connection details for the external CouchDB instance (used when useExternal is true)
+  external:
+    host: ""       # Example: couchdb.example.com
+    port: 5984
+    username: ""
+    password: ""
+
 clusteredCouch:
   noOfCouchDBNodes: 3
-toleration:   # This is for the couchdb pods. Don't change this unless you know what you're doing.
+
+# Tolerations for CouchDB pods; avoid changing unless necessary
+toleration:
   key: "dev-couchdb-only"
   operator: "Equal"
   value: "true"
   effect: "NoSchedule"
+
 ingress:
   annotations:
     groupname: "dev-cht-alb"
     tags: "Environment=dev,Team=QA"
     certificate: "arn:aws:iam::720541322708:server-certificate/2024-wildcard-dev-medicmobile-org-chain"
-  # Ensure the host is not already taken. Valid characters for a subdomain are:
-  #   a-z, 0-9, and - (but not as first or last character).
-  host: "<subdomain>.dev.medicmobile.org"  # e.g. "mrjones.dev.medicmobile.org"
+  host: "<subdomain>.dev.medicmobile.org"
   hosted_zone_id: "Z3304WUAJTCM7P"
   load_balancer: "dualstack.k8s-devchtalb-3eb0781cbb-694321496.eu-west-2.elb.amazonaws.com"
 
-environment: "remote"  # "local", "remote"
-cluster_type: "eks" # "eks" or "k3s-k3d"
-cert_source: "eks-medic" # "eks-medic" or "specify-file-path" or "my-ip-co"
-certificate_crt_file_path: "/path/to/certificate.crt" # Only required if cert_source is "specify-file-path"
-certificate_key_file_path: "/path/to/certificate.key" # Only required if cert_source is "specify-file-path"
+environment: "remote"
+cluster_type: "eks"
+cert_source: "eks-medic"
+certificate_crt_file_path: "/path/to/certificate.crt"
+certificate_key_file_path: "/path/to/certificate.key"
 
 nodes:
-  # If using clustered couchdb, add the nodes here: node-1: name-of-first-node, node-2: name-of-second-node, etc.
-  # Add equal number of nodes as specified in clusteredCouch.noOfCouchDBNodes
-  node-1: "" # This is the name of the first node where couchdb will be deployed
-  node-2: "" # This is the name of the second node where couchdb will be deployed
-  node-3: "" # This is the name of the third node where couchdb will be deployed
-  # For single couchdb node, use the following:
-  # Leave it commented out if you don't know what it means.
-  # Leave it commented out if you want to let kubernetes deploy this on any available node. (Recommended)
-  # single_node_deploy: "gamma-cht-node" # This is the name of the node where all components will be deployed - for non-clustered configuration. 
+  node-1: ""
+  node-2: ""
+  node-3: ""
 
-# Applicable only if using k3s
-k3s_use_vSphere_storage_class: "false" # "true" or "false"
-# vSphere specific configurations. If you set "true" for k3s_use_vSphere_storage_class, fill in the details below.
+# vSphere settings, only applicable if k3s_use_vSphere_storage_class is set to true
+k3s_use_vSphere_storage_class: "false"
 vSphere:
-  datastoreName: "DatastoreName"  # Replace with your datastore name
-  diskPath: "path/to/disk"         # Replace with your disk path
+  datastoreName: "DatastoreName"
+  diskPath: "path/to/disk"
 
-# -----------------------------------------
-#       Pre-existing data section
-# -----------------------------------------
+# Pre-existing CouchDB data configuration
 couchdb_data:
-  preExistingDataAvailable: "false" #If this is false, you don't have to fill in details in local_storage or remote.
-  dataPathOnDiskForCouchDB: "data" # This is the path where couchdb data will be stored. Leave it as data if you don't have pre-existing data.
-    # To mount to a specific subpath (If data is from an old 3.x instance for example): dataPathOnDiskForCouchDB: "storage/medic-core/couchdb/data"
-    # To mount to the root of the volume: dataPathOnDiskForCouchDB: ""
-    # To use the default "data" subpath, remove the subPath line entirely from values.yaml or name it "data" or use null.
-    # for Multi-node configuration, you can use %d to substitute with the node number.
-    # You can use %d for each node to be substituted with the node number.
-    # If %d doesn't exist, the same path will be used for all nodes.
-    # example: test-path%d will be test-path1, test-path2, test-path3 for 3 nodes.
-    # example: test-path will be test-path for all nodes.
-  partition: "0" # This is the partition number for the EBS volume. Leave it as 0 if you don't have a partitioned disk.
+  preExistingDataAvailable: "false"
+  dataPathOnDiskForCouchDB: "data"
+  partition: "0"
 
-# If preExistingDataAvailable is true, fill in the details below.
-# For local_storage, fill in the details if you are using k3s-k3d cluster type.
-local_storage:  #If using k3s-k3d cluster type and you already have existing data.
-  preExistingDiskPath-1: "/var/lib/couchdb1" #If node1 has pre-existing data.
-  preExistingDiskPath-2: "/var/lib/couchdb2" #If node2 has pre-existing data.
-  preExistingDiskPath-3: "/var/lib/couchdb3" #If node3 has pre-existing data.
-# For ebs storage when using eks cluster type, fill in the details below.
+# Pre-existing local disk paths, used for k3s-k3d clusters
+local_storage:
+  preExistingDiskPath-1: "/var/lib/couchdb1"
+  preExistingDiskPath-2: "/var/lib/couchdb2"
+  preExistingDiskPath-3: "/var/lib/couchdb3"
+
+# Pre-existing EBS volume IDs, used for EKS clusters
 ebs:
-  preExistingEBSVolumeID-1: "vol-0123456789abcdefg" # If you have already created the EBS volume, put the ID here.
-  preExistingEBSVolumeID-2: "vol-0123456789abcdefg" # If you have already created the EBS volume, put the ID here.
-  preExistingEBSVolumeID-3: "vol-0123456789abcdefg" # If you have already created the EBS volume, put the ID here.
-  preExistingEBSVolumeSize: "100Gi" # The size of the EBS volume.
+  preExistingEBSVolumeID-1: "vol-0123456789abcdefg"
+  preExistingEBSVolumeID-2: "vol-0123456789abcdefg"
+  preExistingEBSVolumeID-3: "vol-0123456789abcdefg"
+  preExistingEBSVolumeSize: "100Gi"
