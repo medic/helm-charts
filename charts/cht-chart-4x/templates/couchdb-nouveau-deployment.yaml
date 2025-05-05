@@ -17,9 +17,6 @@ spec:
       labels:
         cht.service: nouveau
     spec:
-      securityContext:
-        runAsUser: 0  # Run as root
-        fsGroup: 0    # Set fsGroup to root
       tolerations:
         - key: {{ .Values.toleration.key }}
           operator: {{ .Values.toleration.operator }}
