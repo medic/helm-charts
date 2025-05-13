@@ -1,4 +1,4 @@
-{{- if and (eq (toString .Values.couchdb.clusteredCouch_enabled) "false") (eq (toString .Values.cluster_type) "eks") }}
+{{- if and (eq (toString .Values.couchdb.clusteredCouch_enabled) "false") (or (eq (toString .Values.cluster_type) "eks") (eq (toString .Values.cluster_type) "gke")) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -11,11 +11,15 @@ spec:
   resources:
     requests:
       storage: {{ .Values.couchdb.couchdb_node_storage_size }}
-  {{- if eq (toString .Values.couchdb_data.preExistingDataAvailable) "true" }}
+  {{- if eq (toString .Values.cluster_type) "eks" }}
+    {{- if eq (toString .Values.couchdb_data.preExistingDataAvailable) "true" }}
   volumeName: couchdb-pv-{{ .Values.namespace }}
   storageClassName: ""
-  {{- else }}
+    {{- else }}
   storageClassName: ebs-gp2
+    {{- end }}
+  {{- else if eq (toString .Values.cluster_type) "gke" }}
+  storageClassName: standard-rwo
   {{- end }}
 status: {}
 {{- end }}
