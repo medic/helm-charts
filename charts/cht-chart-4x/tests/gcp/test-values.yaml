@@ -1,0 +1,23 @@
+cluster_type: "gke"
+environment: "test"
+
+ingress:
+  host: "34.54.243.63.nip.io"
+  gcp:
+    enabled: true
+    staticIpName: "cht-api-ip"
+    managedCertificateName: "cht-api-cert"
+
+couchdb:
+  password: "test-password"
+  secret: "test-secret"
+  user: "medic"
+  uuid: "test-uuid"
+  clusteredCouch_enabled: false
+  couchdb_node_storage_size: 100Mi
+
+cht_image_tag: 4.10.0
+upstream_servers:
+  docker_registry: "public.ecr.aws/medic"
+  builds_url: "https://staging.dev.medicmobile.org/_couch/builds_4"
+namespace: "cht-gcp-test"

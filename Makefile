@@ -8,8 +8,9 @@ $(CHARTS:=/build): add_repos # Build dependencies for a specific chart
 	helm dependency build charts/$(@:/build=)
 
 .PHONY: test
-test: build # Lint all charts
+test: build # Lint all charts and validate GCP templates
 	helm lint charts/* --set cht_image_tag=unused_tag_for_chart_ci
+	helm template . -f tests/gcp/test-values.yaml | kubeval
 
 .PHONY: add_repos
 add_repos: # Add helm repo dependencies for publishing charts
