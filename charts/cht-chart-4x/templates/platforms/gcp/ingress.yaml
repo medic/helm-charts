@@ -1,0 +1,24 @@
+{{- if eq .Values.cluster_type "gke" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  labels:
+    {{- include "cht-chart-4x.gcp.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.gcp.staticIpName }}
+    networking.gke.io/managed-certificates: {{ .Values.ingress.gcp.managedCertificateName }}
+    kubernetes.io/ingress.class: {{ include "cht-chart-4x.gcp.ingressClass" . }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 5988
+{{- end }}
