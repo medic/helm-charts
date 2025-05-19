@@ -12,7 +12,7 @@ lint: # Lint all charts
 	helm lint charts/* --set cht_image_tag=unused_tag_for_chart_ci
 
 test: build # Validate GCP templates
-	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml | kubeval --schema-location https://kubernetesjsonschema.dev/master-standalone/ --schema-location file://$(PWD)/tests/gcp/schemas/
+	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml | kubeval --schema-location https://kubernetesjsonschema.dev/master-standalone/ --schema-location file://$(PWD)/charts/cht-chart-4x/tests/gcp/schemas
 
 .PHONY: add_repos
 add_repos: # Add helm repo dependencies for publishing charts
