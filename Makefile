@@ -7,12 +7,21 @@ build: $(CHARTS:=/build) # Build dependencies for all charts
 $(CHARTS:=/build): add_repos # Build dependencies for a specific chart
 	helm dependency build charts/$(@:/build=)
 
-.PHONY: lint test
+.PHONY: lint test template-validate schema-validate value-validate
 lint: # Lint all charts
 	helm lint charts/* --set cht_image_tag=unused_tag_for_chart_ci
 
-test: build # Validate GCP templates
+template-validate: build # Validate templates can be rendered
+	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml > /dev/null
+
+schema-validate: build # Validate against Kubernetes schemas
 	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml | kubeval --schema-location https://kubernetesjsonschema.dev/master-standalone/ --schema-location file://$(PWD)/charts/cht-chart-4x/tests/gcp/schemas
+
+value-validate: build # Validate required resources are present
+	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml | grep -q "kind: Service" || (echo "No Service found" && exit 1)
+	cd charts/cht-chart-4x && helm template . -f tests/gcp/test-values.yaml | grep -q "kind: Deployment" || (echo "No Deployment found" && exit 1)
+
+test: lint template-validate schema-validate value-validate # Run all validations
 
 .PHONY: add_repos
 add_repos: # Add helm repo dependencies for publishing charts
