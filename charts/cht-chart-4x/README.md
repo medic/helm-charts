@@ -10,6 +10,16 @@ This chart deploys the Community Health Toolkit (CHT) 4.x on Kubernetes.
 - kubectl configured to access your GKE cluster
 - Helm installed
 
+### ⚠️ Cost Considerations
+
+- Running this test environment in GCP will incur costs.
+- Always clean up resources when done testing to avoid unnecessary charges.
+- Use smaller machine types for testing.
+- Monitor your GCP billing dashboard.
+- Set up budget alerts in GCP.
+
+For the most up-to-date pricing, check the [GCP Pricing Calculator](https://cloud.google.com/products/calculator).
+
 1. **Clone the repository and navigate to the chart directory:**
    ```bash
    git clone https://github.com/medic/helm-charts.git
@@ -64,6 +74,34 @@ This chart deploys the Community Health Toolkit (CHT) 4.x on Kubernetes.
    - The application is accessible at `/medic` path
    - If you get a "Not Found" error at the root path, this is expected
    - Always use `http://<YOUR-STATIC-IP>.nip.io/medic`
+
+### Cleanup Steps
+
+When you're done testing, follow these steps to clean up all resources:
+
+1. **Delete the Helm release:**
+   ```bash
+   helm uninstall cht-test -n cht-gcp-test
+   ```
+
+2. **Delete the namespace:**
+   ```bash
+   kubectl delete namespace cht-gcp-test
+   ```
+
+3. **Release the static IP:**
+   ```bash
+   gcloud compute addresses delete test-api-ip --global
+   ```
+
+4. **Verify cleanup:**
+   ```bash
+   # Check if namespace is deleted
+   kubectl get namespace cht-gcp-test
+
+   # Check if static IP is released
+   gcloud compute addresses list --global
+   ```
 
 ### ⚠️ Important Notes
 
