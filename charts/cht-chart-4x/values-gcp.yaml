@@ -3,7 +3,6 @@
 
 # Override cluster type for GCP
 cluster_type: "gke"
-cert_source: "gcp-managed"
 
 # GCP-specific ingress configuration
 ingress:
@@ -18,10 +17,3 @@ couchdb:
   persistent_disk:
     size: "100Gi"  # Size for GCP persistent disk
     type: "pd-standard"  # GCP persistent disk type
-
-# GCP-specific certificate paths (if using custom certificates)
-certificate_crt_file_path: "/path/to/certificate.crt"
-certificate_key_file_path: "/path/to/certificate.key"
-
-# GCP-specific namespace
-namespace: "cht-gcp"  # Replace with your desired namespace

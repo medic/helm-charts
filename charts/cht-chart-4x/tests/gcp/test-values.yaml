@@ -13,27 +13,23 @@ couchdb:
   secret: "test-secret"
   uuid: "test-uuid"
   user: "medic"
-  clusteredCouch_enabled: false
-  # Test storage
-  storage_class: "standard-rwo"  # GCP standard persistent disk
-  persistent_disk:
-    size: "100Gi"  # Size for GCP persistent disk
-    type: "pd-standard"  # GCP persistent disk type
 
 # Test-specific image tag
 cht_image_tag: 4.10.0
 
 # Test-specific GCP settings
-ingress:
-  gcp:
-    staticIpName: "test-api-ip"
-    managedCertificateName: "test-api-cert"
-
-# Override cluster type for GCP
 cluster_type: "gke"
-cert_source: "gcp-managed"
+cert_source: "none"  # Disable managed certificate for testing
 
-# Common upstream servers (inherited from base values)
-upstream_servers:
-  docker_registry: "public.ecr.aws/medic"
-  builds_url: "https://staging.dev.medicmobile.org/_couch/builds_4"
+ingress:
+  host: "<YOUR-STATIC-IP>.nip.io"
+  gcp:
+    enabled: true
+    staticIpName: "test-api-ip"
+    managedCertificateName: ""  # Empty string to disable managed certificate
+
+# Service configuration
+api:
+  service:
+    type: LoadBalancer
+
