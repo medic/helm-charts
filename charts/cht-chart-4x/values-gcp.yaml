@@ -17,3 +17,7 @@ couchdb:
   persistent_disk:
     size: "100Gi"  # Size for GCP persistent disk
     type: "pd-standard"  # GCP persistent disk type
+    diskName: "couchdb-disk"  # Name of pre-existing GCP persistent disk (required if preExistingDataAvailable is true)
+    diskName-1: "couchdb-disk-1"  # Name of pre-existing GCP persistent disk for node 1 (clustered setup)(required if preExistingDataAvailable is true)
+    diskName-2: "couchdb-disk-2"  # Name of pre-existing GCP persistent disk for node 2 (clustered setup)(required if preExistingDataAvailable is true)
+    diskName-3: "couchdb-disk-3"  # Name of pre-existing GCP persistent disk for node 3 (clustered setup)(required if preExistingDataAvailable is true)

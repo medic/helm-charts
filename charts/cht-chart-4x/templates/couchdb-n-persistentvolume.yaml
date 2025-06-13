@@ -1,7 +1,7 @@
 {{- if eq (toString $.Values.couchdb.clusteredCouch_enabled) "true" }}
 {{- if or (eq $.Values.cluster_type "k3s-k3d") (and (eq $.Values.cluster_type "eks") (eq (toString $.Values.couchdb_data.preExistingDataAvailable) "true")) }}
 # If we're using clustered mode and the cluster is k3s-k3d or eks and pre-existing data is available, then we need to create PersistentVolume for each CouchDB node.
-# If the cluster is eks and there is no pre-existing data, this is not applicable as those are created automatically by EKS when making the claims.
+# If the cluster is eks and there is no pre-existing data, this is not applicable as those are created automatically when making the claims.
 {{- range $i, $e := until (int $.Values.clusteredCouch.noOfCouchDBNodes) }}
 {{ $nodeNumber := add $i 1 }}
 apiVersion: v1
