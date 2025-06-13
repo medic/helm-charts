@@ -1,0 +1,35 @@
+# Test values for GCP deployment
+# These values are used for testing the GCP configuration
+# This file extends values.yaml and values-gcp.yaml with test-specific overrides
+
+# Test environment settings
+environment: "test"
+namespace: "cht-gcp-test"
+
+# Test-specific credentials and storage
+couchdb:
+  # Test credentials
+  password: "test-password"
+  secret: "test-secret"
+  uuid: "test-uuid"
+  user: "medic"
+
+# Test-specific image tag
+cht_image_tag: 4.10.0
+
+# Test-specific GCP settings
+cluster_type: "gke"
+cert_source: "none"  # Disable managed certificate for testing
+
+ingress:
+  host: "<YOUR-STATIC-IP>.nip.io"
+  gcp:
+    enabled: true
+    staticIpName: "test-api-ip"
+    managedCertificateName: ""  # Empty string to disable managed certificate
+
+# Service configuration
+api:
+  service:
+    type: LoadBalancer
+

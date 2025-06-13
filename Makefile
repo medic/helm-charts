@@ -7,10 +7,28 @@ build: $(CHARTS:=/build) # Build dependencies for all charts
 $(CHARTS:=/build): add_repos # Build dependencies for a specific chart
 	helm dependency build charts/$(@:/build=)
 
-.PHONY: test
-test: build # Lint all charts
+.PHONY: lint
+lint: # Lint all charts
 	helm lint charts/* --set cht_image_tag=unused_tag_for_chart_ci
 
+.PHONY: template-validate-gcp
+template-validate-gcp: build # Validate GCP templates can be rendered
+	cd charts/cht-chart-4x && helm template . -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml > /dev/null
+
+.PHONY: schema-validate-gcp
+schema-validate-gcp: build # Validate GCP resources against Kubernetes schemas
+	cd charts/cht-chart-4x && helm template . -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml | kubeval --ignore-missing-schemas
+
+.PHONY: value-validate-gcp
+value-validate-gcp: build # Validate required GCP resources are present
+	cd charts/cht-chart-4x && helm template . -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml | grep -q "kind: Service" || (echo "No Service found" && exit 1)
+	cd charts/cht-chart-4x && helm template . -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml | grep -q "kind: Deployment" || (echo "No Deployment found" && exit 1)
+
+# Test gcp targets
+.PHONY: test-gcp template-validate-gcp schema-validate-gcp value-validate-gcp
+test-gcp: template-validate-gcp schema-validate-gcp value-validate-gcp # Run all GCP validations
+
+# Repository targets
 .PHONY: add_repos
 add_repos: # Add helm repo dependencies for publishing charts
 	helm repo add grafana                https://grafana.github.io/helm-charts
