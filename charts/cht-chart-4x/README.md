@@ -62,6 +62,19 @@ For the most up-to-date pricing, check the [GCP Pricing Calculator](https://clou
        host: "<YOUR-STATIC-IP>.nip.io"  # Replace with your static IP
      ```
 
+   **Values File Hierarchy:**
+   The deployment uses multiple values files that are applied in the following order:
+   - `values.yaml`: Contains default configuration
+   - `values-gcp.yaml`: Adds GCP-specific settings
+   - `tests/gcp/test-values.yaml`: Overrides previous values for testing purposes
+
+   **Important Variables:**
+   - `cluster_type`: Must be set to "gke" for GCP deployments
+   - `couchdb.clusteredCouch_enabled`: Set to "true" for multi-node setup, "false" for single-node
+   - `couchdb_data.preExistingDataAvailable`: Set to "true" if using existing data disks
+   - `couchdb.persistent_disk.diskName`: Required if using pre-existing data
+   - `clusteredCouch.noOfCouchDBNodes`: Number of CouchDB nodes (only used if clusteredCouch_enabled is "true")
+
 5. **Deploy the chart:**
    ```bash
    helm install cht-test . --namespace cht-gcp-test -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml
