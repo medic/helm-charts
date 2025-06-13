@@ -20,10 +20,23 @@ This chart deploys the Community Health Toolkit (CHT) 4.x on Kubernetes.
 
 For the most up-to-date pricing, check the [GCP Pricing Calculator](https://cloud.google.com/products/calculator).
 
-1. **Clone the repository and navigate to the chart directory:**
+1. **Install the chart using one of these methods:**
+
+   **Option 1 - Using Helm Repository (Recommended):**
+   ```bash
+   # Add the Medic Helm repository
+   helm repo add medic https://medic.github.io/helm-charts
+   helm repo update
+
+   # Install the chart
+   helm install cht-test medic/cht-chart-4x --namespace cht-gcp-test -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml
+   ```
+
+   **Option 2 - Using Git Clone:**
    ```bash
    git clone https://github.com/medic/helm-charts.git
    cd helm-charts/charts/cht-chart-4x
+   helm install cht-test . --namespace cht-gcp-test -f values.yaml -f values-gcp.yaml -f tests/gcp/test-values.yaml
    ```
 
 2. **Create a namespace for your deployment:**
