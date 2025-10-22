@@ -1,6 +1,6 @@
 project_name: "<your-project-name>" # e.g. mrjones-dev
 namespace: "<your-namespace>" # e.g. "mrjones-dev"
-chtversion: 4.10.0
+chtversion: 4.22.0
 # cht_image_tag: 4.1.1-4.1.1 #- This is filled in automatically by the deploy script. Don't uncomment this line.
 
 # If images are cached, the same image tag will never be pulled twice. For development, this means that it's not
@@ -28,7 +28,7 @@ clusteredCouch:
 toleration:   # This is for the couchdb pods. Don't change this unless you know what you're doing.
   key: "dev-couchdb-only"
   operator: "Equal"
-  value: "true"
+  value: true
   effect: "NoSchedule"
 ingress:
   annotations:
@@ -59,8 +59,8 @@ nodes:
   # single_node_deploy: "gamma-cht-node" # This is the name of the node where all components will be deployed - for non-clustered configuration. 
 
 # Applicable only if using k3s
-k3s_use_vSphere_storage_class: "false" # "true" or "false"
-# vSphere specific configurations. If you set "true" for k3s_use_vSphere_storage_class, fill in the details below.
+k3s_use_vSphere_storage_class: false # true or false
+# vSphere specific configurations. If you set true for k3s_use_vSphere_storage_class, fill in the details below.
 vSphere:
   datastoreName: "DatastoreName"  # Replace with your datastore name
   diskPath: "path/to/disk"         # Replace with your disk path
@@ -69,7 +69,7 @@ vSphere:
 #       Pre-existing data section
 # -----------------------------------------
 couchdb_data:
-  preExistingDataAvailable: "false" #If this is false, you don't have to fill in details in local_storage or remote.
+  preExistingDataAvailable: false #If this is false, you don't have to fill in details in local_storage or remote.
   dataPathOnDiskForCouchDB: "data" # This is the path where couchdb data will be stored. Leave it as data if you don't have pre-existing data.
     # To mount to a specific subpath (If data is from an old 3.x instance for example): dataPathOnDiskForCouchDB: "storage/medic-core/couchdb/data"
     # To mount to the root of the volume: dataPathOnDiskForCouchDB: ""
