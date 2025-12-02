@@ -45,6 +45,17 @@ entries:
     version: 0.1.0
   cht-chart-4x:
   - apiVersion: v2
+    created: "2025-12-02T16:10:01.981523476Z"
+    description: A Helm chart for Community Health Toolkit (CHT) v4
+    digest: 575126bfbec39f66c5e81bb0ecd781a058405dcc92d5db56d5dea26429b66ee6
+    home: https://github.com/medic/cht-core
+    icon: https://avatars.githubusercontent.com/u/474424?s=200&v=4
+    name: cht-chart-4x
+    type: application
+    urls:
+    - https://github.com/medic/helm-charts/releases/download/cht-chart-4x-1.2.0/cht-chart-4x-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     created: "2024-10-04T08:57:13.104429165Z"
     description: A Helm chart for Community Health Toolkit (CHT) v4
     digest: 8539b934149090c38f98af7f782e4a1396ad3b4313a96cfd00095fb66879a037
@@ -133,6 +144,30 @@ entries:
     - https://github.com/medic/helm-charts/releases/download/cht-chart-4x-0.2.0/cht-chart-4x-0.2.0.tgz
     version: 0.2.0
   cht-user-management:
+  - apiVersion: v2
+    created: "2025-12-02T16:10:02.246359823Z"
+    dependencies:
+    - alias: cht-user-management
+      name: base-single-app
+      repository: https://docs.communityhealthtoolkit.org/helm-charts
+      version: 0.2.2
+    - alias: cht-user-management-worker
+      name: base-single-app
+      repository: https://docs.communityhealthtoolkit.org/helm-charts
+      version: 0.2.2
+    - alias: redis
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.13.2
+    description: Chart for cht-user-management
+    digest: 63b9d235cefc71f004d8618bea7f557125fae76b3eb6a5d0ea35ab389e7a0b85
+    home: https://github.com/medic/cht-user-management
+    icon: https://avatars.githubusercontent.com/u/474424?s=200&v=4
+    name: cht-user-management
+    type: application
+    urls:
+    - https://github.com/medic/helm-charts/releases/download/cht-user-management-0.2.3/cht-user-management-0.2.3.tgz
+    version: 0.2.3
   - apiVersion: v2
     created: "2024-10-30T17:27:40.193073332Z"
     dependencies:
@@ -386,4 +421,4 @@ entries:
     urls:
     - https://github.com/medic/helm-charts/releases/download/observability-0.1.2/observability-0.1.2.tgz
     version: 0.1.2
-generated: "2024-10-30T17:27:40.193124548Z"
+generated: "2025-12-02T16:10:02.246425316Z"
