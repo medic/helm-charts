@@ -36,3 +36,16 @@ Looks if there is existing secrets and reuse their keys. If not generate new key
 {{- (randAlphaNum 45) | b64enc | quote }}
 {{- end }}
 {{- end }}
+
+{{/*
+Generate SECRET_KEY (32 bytes / 64 hex chars), persisted across upgrades.
+This must be hex because the app decrypts using Buffer.from(secretKey, 'hex').
+*/}}
+{{- define "chtUserManagement.SECRET_KEY" -}}
+{{- $secret := (lookup "v1" "Secret" (.Release.Namespace) (include "chtUserManagement.fullname" .) ) }}
+{{- if $secret }}
+{{- index $secret "data" "SECRET_KEY" }}
+{{- else }}
+{{- (randBytes 32 | sha256sum ) | quote }}
+{{- end }}
+{{- end }}
